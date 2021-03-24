@@ -46,6 +46,33 @@ class Graph:
     else:
       raise ValueError("No edge for these nodes")
 
+  def has_node(self, node):
+    return node in list(self.graph.keys())
+
+  def neighbors(self, node):
+    if node not in list(self.graph.keys()):
+      raise KeyError("Node Not in here")
+    return self.graph[node]
+
+  def adjacent(self, node1, node2):
+    # return true if they are connected by an edge
+    if node1 not in list(self.graph.keys()):
+      raise KeyError("{} not in graph".format(node1))
+    if node2 not in list(self.graph.keys()):
+      raise KeyError("{} not in graph".format(node2))
+    return node1 in list(self.graph[node2].keys()) or node2 in list(self.graph[node1].keys())
+
+  def depth_traversal(self, start, checked=None):
+    if start not in list(self.graph.keys()):
+      raise KeyError("{} not in graph.".format(start))
+    if checked is None:
+      checked = []
+    checked.extend([start])
+    for edge in list(self.graph[start].keys()):
+      if edge not in checked:
+        self.depth_traversal(edge, checked)
+    return checked
+
 
 
 dummy = Graph()
