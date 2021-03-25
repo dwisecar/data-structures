@@ -4,7 +4,7 @@ class Node:
     self.data = data
 
 class LinkedList:
-  def __init__(self):
+  def __init__(self, head=None, data=None):
     self.head = None
 
   def get_count(self):
