@@ -1,14 +1,13 @@
-class Node
-  attr_accessor :next
-  attr_reader :value
+class DLLNode 
+  attr_accessor :value, :prev, :next
   def initialize(value)
     @value = value
+    @prev = nil
     @next = nil
   end
-
 end
 
-class LinkedList
+class DoublyLinkedList
   def initialize
     @head = nil
   end
@@ -29,8 +28,9 @@ class LinkedList
   end
 
   def append(value)
-    new_node = Node.new(value)
+    new_node = DLLNode.new(value)
     if @head
+      new_node.prev = find_end
       find_end.next = new_node
     else
       @head = new_node
@@ -38,31 +38,35 @@ class LinkedList
   end
 
   def append_after(target, value)
-    new_node = Node.new(value)
-    node = find(target)
-    if node
-      new_node.next = node.next
-      node.next = new_node
-    end 
+    new_node = DLLNode.new(value)
+    target_node = find(target)
+    if target_node
+      new_node.prev = target_node
+      target_node.next.prev = new_node
+      new_node.next = target_node.next
+      target_node.next = new_node
+    end
   end
 
   def delete(value)
     node = @head
     if node.value == value
+      @head.next.prev = nil
       @head = @head.next
       return
     end
-    while node.next
-      if node.next.value == value
+    while node
+      if node.value == value
         break
       end
       node = node.next
     end
     if node
-      node.next = node.next.next
-    else
-      p "Value not found"
-    end
+      node.prev.next = node.next
+      if node.next
+        node.next.prev = node.prev
+      end
+    end 
   end
 
   def print_list
@@ -72,17 +76,17 @@ class LinkedList
       node = node.next
     end
   end
-
+  
 end
 
-ll = LinkedList.new
+dll = DoublyLinkedList.new
 
-ll.append("Monday")
-ll.append("Wednesday")
-ll.append("Thursday")
-ll.append("Friday")
-ll.append("Saturday")
-ll.print_list
-ll.append_after("Monday", "Tuesday")
-ll.delete("Friday")
-ll.print_list
+dll.append("Monday")
+
+dll.append("Wednesday")
+dll.append("Thursday")
+dll.append_after("Monday", "Tuesday")
+
+dll.print_list
+dll.delete("Thursday")
+dll.print_list
